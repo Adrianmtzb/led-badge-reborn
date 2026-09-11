@@ -48,19 +48,48 @@ static void handleRoot() {
   server.send_P(200, "text/html; charset=utf-8", INDEX_HTML);
 }
 
+// Un solo GET con todo lo que la página necesita para pintarse: las categorías
+// y los comandos con su color ya cuantizado.
 static void handleCommands() {
-  String out = "[";
+  char hex[8];
+
+  // ~100 B por comando. Reservar de una vez evita que String crezca a
+  // realloc por realloc y fragmente el heap con el catálogo entero.
+  String out;
+  out.reserve(128 * COMMAND_COUNT);
+  out += "{\"categories\":[";
+  for (uint8_t m = 0; m < MODE_COUNT; m++) {
+    if (m) out += ',';
+    out += "{\"key\":\"";
+    out += CATEGORIES[m].key;
+    out += "\",\"label\":\"";
+    out += jsonEscape(CATEGORIES[m].label);
+    out += "\",\"blurb\":\"";
+    out += jsonEscape(CATEGORIES[m].blurb);
+    out += "\",\"count\":";
+    out += catalogCount((Mode)m);
+    out += '}';
+  }
+
+  out += "],\"commands\":[";
   for (uint16_t i = 0; i < COMMAND_COUNT; i++) {
     if (i) out += ',';
+    snprintf(hex, sizeof(hex), "#%06X", (unsigned)COMMANDS[i].rgb);
     out += "{\"i\":";
     out += i;
-    out += ",\"label\":\"";
-    out += COMMANDS[i].label;
+    out += ",\"id\":\"";
+    out += COMMANDS[i].id;
+    out += "\",\"name\":\"";
+    out += jsonEscape(COMMANDS[i].name);
+    out += "\",\"note\":\"";
+    out += jsonEscape(COMMANDS[i].note);
+    out += "\",\"color\":\"";
+    out += hex;
     out += "\",\"mode\":\"";
     out += modeName(COMMANDS[i].mode);
     out += "\"}";
   }
-  out += ']';
+  out += "]}";
   server.send(200, "application/json", out);
 }
 
@@ -76,8 +105,8 @@ static void handleState() {
   out += catalogCurrentCount();
   out += ",\"index\":";
   out += has ? (int)absIdx : -1;
-  out += ",\"label\":\"";
-  out += has ? COMMANDS[absIdx].label : "";
+  out += ",\"name\":\"";
+  out += has ? jsonEscape(COMMANDS[absIdx].name) : String("");
   out += "\",\"net\":{\"mode\":\"";
   out += (netMode() == NetMode::STA) ? "STA" : "AP";
   out += "\",\"ssid\":\"";

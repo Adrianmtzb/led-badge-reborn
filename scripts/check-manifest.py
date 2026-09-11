@@ -25,13 +25,13 @@ ESPERADO = {
     "bootloader.bin":       4096,   # 0x1000
     "partitions.bin":      32768,   # 0x8000
     "boot_app0.bin":       57344,   # 0xE000
-    "led_badge_reborn.bin": 65536,  # 0x10000
+    "led_badge_blaster.bin": 65536,  # 0x10000
 }
 
 
 def main() -> int:
     manifest_ruta = RAIZ / "docs" / "manifest.json"
-    config_ruta = RAIZ / "firmware" / "led_badge_reborn" / "config.h"
+    config_ruta = RAIZ / "firmware" / "led_badge_blaster" / "config.h"
 
     manifest = json.loads(manifest_ruta.read_text())
     partes = {p["path"]: p["offset"] for b in manifest["builds"] for p in b["parts"]}

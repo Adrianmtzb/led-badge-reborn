@@ -8,7 +8,7 @@ antiguas.
 ## Cómo reportar
 
 **No abras un issue público.** Usa el apartado
-[Security → Report a vulnerability](https://github.com/Adrianmtzb/led-badge-reborn/security/advisories/new)
+[Security → Report a vulnerability](https://github.com/Adrianmtzb/led-badge-blaster/security/advisories/new)
 del repositorio, que es privado.
 
 Cuenta qué encontraste, cómo reproducirlo y qué impacto le ves. Intento
@@ -49,3 +49,23 @@ reportar como fallo algo que es una decisión consciente.
   físico se pueden extraer volcando la flash.
 
 Si encuentras algo que se salga de esta lista, repórtalo.
+
+## Alcance de lo que emite
+
+El firmware solo envía tramas de color único: encienden un badge con un color y
+una envolvente. No hay comandos de configuración, escritura de EEPROM, cambio de
+grupo ni reset de dispositivos. Si alguna vez se añaden, irán en una sección
+marcada como avanzada y persistente, no mezclados con los colores.
+
+Úsalo solo con dispositivos propios o que tengas permiso para probar, y no en
+eventos en directo. El detalle está en el
+[uso aceptable](README.md#uso-aceptable) del README.
+
+## Reclamaciones de derechos
+
+Esto no es un canal de seguridad, pero se atiende igual. Si representas a un
+titular de derechos (copyright, marca o patente) y ves un problema concreto,
+abre un [issue](https://github.com/Adrianmtzb/led-badge-blaster/issues)
+describiéndolo o usa el canal privado de arriba si prefieres. Las atribuciones
+y el contexto de terceros están en
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

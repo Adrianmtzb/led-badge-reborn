@@ -13,7 +13,7 @@ permissions:
 # Los comandos de verdad viven en el Makefile, para que el CI ejecute
 # exactamente lo mismo que ejecuta quien contribuye en su máquina.
 env:
-  BUILD_DIR: firmware/led_badge_reborn/build/m5stack.esp32.m5stack_atom
+  BUILD_DIR: firmware/led_badge_blaster/build/m5stack.esp32.m5stack_atom
 
 jobs:
   compilar:
@@ -84,8 +84,8 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes \
-            dist/led_badge_reborn.ino.bin \
-            dist/led_badge_reborn.ino.merged.bin
+            dist/led_badge_blaster.ino.bin \
+            dist/led_badge_blaster.ino.merged.bin
 
   pagina:
     name: Desplegar el instalador
@@ -112,10 +112,10 @@ jobs:
       - name: Armar el sitio
         run: |
           mkdir -p _site
-          cp docs/index.html docs/manifest.json          _site/
-          cp dist/led_badge_reborn.ino.bin              _site/led_badge_reborn.bin
-          cp dist/led_badge_reborn.ino.bootloader.bin   _site/bootloader.bin
-          cp dist/led_badge_reborn.ino.partitions.bin   _site/partitions.bin
+          cp docs/index.html docs/manifest.json docs/catalog.json _site/
+          cp dist/led_badge_blaster.ino.bin              _site/led_badge_blaster.bin
+          cp dist/led_badge_blaster.ino.bootloader.bin   _site/bootloader.bin
+          cp dist/led_badge_blaster.ino.partitions.bin   _site/partitions.bin
           cp dist/boot_app0.bin                         _site/boot_app0.bin
 
       - uses: actions/upload-pages-artifact@v5

@@ -1,6 +1,6 @@
 {
-  "name": "LED Badge Reborn",
-  "version": "1.0.0",
+  "name": "LED Badge Blaster",
+  "version": "2.0.0",
   "new_install_prompt_erase": true,
   "builds": [
     {
@@ -9,7 +9,7 @@
         { "path": "bootloader.bin", "offset": 4096 },
         { "path": "partitions.bin", "offset": 32768 },
         { "path": "boot_app0.bin", "offset": 57344 },
-        { "path": "led_badge_reborn.bin", "offset": 65536 }
+        { "path": "led_badge_blaster.bin", "offset": 65536 }
       ]
     }
   ]

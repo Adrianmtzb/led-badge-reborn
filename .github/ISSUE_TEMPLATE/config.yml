@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Cómo se usa
-    url: https://github.com/Adrianmtzb/led-badge-reborn#readme
+    url: https://github.com/Adrianmtzb/led-badge-blaster#readme
     about: Instalación, primer arranque y API HTTP están en el README.
   - name: Reportar un problema de seguridad
-    url: https://github.com/Adrianmtzb/led-badge-reborn/security/policy
+    url: https://github.com/Adrianmtzb/led-badge-blaster/security/policy
     about: No abras un issue público para vulnerabilidades.

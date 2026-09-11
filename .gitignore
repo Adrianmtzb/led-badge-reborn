@@ -11,3 +11,7 @@ docs/*.bin
 # Ajustes locales del editor
 .vscode/
 _site/
+
+# Playwright, que solo hace falta para 'make presets'
+node_modules/
+package-lock.json

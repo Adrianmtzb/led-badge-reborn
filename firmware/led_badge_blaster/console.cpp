@@ -28,16 +28,37 @@ static void handleLine(const String& line) {
   if (lower == "help") {
     Serial.println("Comandos:");
     Serial.println("  status              estado actual");
-    Serial.println("  mode special|pulso|fade");
+    Serial.println("  cats                lista de categorias");
+    Serial.println("  mode <categoria>    ver 'cats'");
     Serial.println("  pos <n>             posicion dentro de la categoria");
     Serial.println("  send [n]            emite el actual, o el indice absoluto n");
     Serial.println("  next                avanza posicion");
+    Serial.println("  list                comandos de la categoria actual");
     Serial.println("  net                 estado de red");
     Serial.println("  forget              borra el WiFi y reinicia en portal");
     return;
   }
 
   if (lower == "status") { appPrintStatus(); return; }
+
+  if (lower == "cats") {
+    for (uint8_t i = 0; i < MODE_COUNT; i++) {
+      Serial.printf("  %-12s %2u comandos  %s\n",
+                    CATEGORIES[i].key, catalogCount((Mode)i), CATEGORIES[i].blurb);
+    }
+    return;
+  }
+
+  if (lower == "list") {
+    const Mode m = catalogMode();
+    for (uint16_t i = 0; i < COMMAND_COUNT; i++) {
+      if (COMMANDS[i].mode != m) continue;
+      Serial.printf("  %3u %-8s #%06X  %s%s%s\n",
+                    i, COMMANDS[i].id, (unsigned)COMMANDS[i].rgb, COMMANDS[i].name,
+                    COMMANDS[i].note[0] ? " — " : "", COMMANDS[i].note);
+    }
+    return;
+  }
 
   if (lower == "net") {
     Serial.printf("NET mode=%s ssid=%s ip=%s\n",
@@ -54,7 +75,7 @@ static void handleLine(const String& line) {
     String m = lower.substring(5); m.trim();
     Mode parsed;
     if (modeFromName(m.c_str(), parsed)) appSetMode(parsed);
-    else Serial.println("ERR: mode special|pulso|fade");
+    else Serial.println("ERR: categoria desconocida (escribe 'cats')");
     return;
   }
 

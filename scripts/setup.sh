@@ -27,7 +27,7 @@ aviso() { printf '  %saviso%s  %s\n'    "$AMBAR" "$FIN" "$1"; }
 falta() { printf '  %sfalta%s  %s\n'    "$ROJO"  "$FIN" "$1"; }
 
 echo
-echo "Dependencias de LED Badge Reborn"
+echo "Dependencias de LED Badge Blaster"
 echo
 
 # ---------------------------------------------------------------- python3

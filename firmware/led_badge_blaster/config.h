@@ -11,8 +11,8 @@ static const uint8_t PIN_IRLED  = 12;  // LED IR
 // =====================================================
 // Identidad
 // =====================================================
-#define FW_NAME    "led-badge-reborn"
-#define FW_VERSION "1.0.0"
+#define FW_NAME    "led-badge-blaster"
+#define FW_VERSION "2.0.0"
 #define MDNS_HOST  "led-badge"
 
 // =====================================================

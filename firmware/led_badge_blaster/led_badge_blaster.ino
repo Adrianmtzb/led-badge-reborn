@@ -1,5 +1,5 @@
 // =====================================================
-// led-badge-reborn
+// led-badge-blaster
 // M5Stack ATOM Lite -> emisor IR (PRONTO) con portal WiFi propio.
 //
 // El reparto está en:

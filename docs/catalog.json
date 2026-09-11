@@ -1,0 +1,315 @@
+{
+  "categories": [
+    {
+      "key": "CAPTURAS",
+      "label": "Capturas",
+      "blurb": "Colores decodificados de capturas reales. La referencia de compatibilidad más fiable.",
+      "colors": [
+        {
+          "name": "Rojo",
+          "hex": "#F02000"
+        },
+        {
+          "name": "Naranja",
+          "hex": "#F05000"
+        },
+        {
+          "name": "Naranja oscuro",
+          "hex": "#B84400"
+        },
+        {
+          "name": "Amarillo dorado",
+          "hex": "#E4BC00"
+        },
+        {
+          "name": "Ámbar",
+          "hex": "#E49400"
+        },
+        {
+          "name": "Oliva",
+          "hex": "#B8BC00"
+        },
+        {
+          "name": "Verde",
+          "hex": "#10D000"
+        },
+        {
+          "name": "Verde claro",
+          "hex": "#84F05C"
+        },
+        {
+          "name": "Verde menta",
+          "hex": "#68F0A0"
+        },
+        {
+          "name": "Cian",
+          "hex": "#34F0FC"
+        },
+        {
+          "name": "Azul cielo",
+          "hex": "#1094DC"
+        },
+        {
+          "name": "Azul",
+          "hex": "#480CFC"
+        },
+        {
+          "name": "Morado",
+          "hex": "#8838FC"
+        },
+        {
+          "name": "Púrpura",
+          "hex": "#B80CDC"
+        },
+        {
+          "name": "Ciruela",
+          "hex": "#840C5C"
+        },
+        {
+          "name": "Frambuesa",
+          "hex": "#E4385C"
+        },
+        {
+          "name": "Fucsia",
+          "hex": "#CC0C5C"
+        },
+        {
+          "name": "Rosa",
+          "hex": "#EC74A0"
+        },
+        {
+          "name": "Melocotón",
+          "hex": "#F09C5C"
+        },
+        {
+          "name": "Salmón",
+          "hex": "#F0745C"
+        },
+        {
+          "name": "Lavanda",
+          "hex": "#B894FC"
+        },
+        {
+          "name": "Verde lima",
+          "hex": "#CCF05C"
+        },
+        {
+          "name": "Azul pálido",
+          "hex": "#B8D0FC"
+        },
+        {
+          "name": "Violeta",
+          "hex": "#B80CFC"
+        },
+        {
+          "name": "Magenta",
+          "hex": "#F034FC"
+        }
+      ]
+    },
+    {
+      "key": "BASICOS",
+      "label": "Básicos",
+      "blurb": "Primarios y secundarios al máximo que el badge puede representar.",
+      "colors": [
+        {
+          "name": "Rojo pleno",
+          "hex": "#FC0000"
+        },
+        {
+          "name": "Verde pleno",
+          "hex": "#00FC00"
+        },
+        {
+          "name": "Azul pleno",
+          "hex": "#0000FC"
+        },
+        {
+          "name": "Cyan",
+          "hex": "#00FCFC"
+        },
+        {
+          "name": "Magenta",
+          "hex": "#FC00FC"
+        },
+        {
+          "name": "Amarillo",
+          "hex": "#FCFC00"
+        },
+        {
+          "name": "Blanco",
+          "hex": "#FCFCFC"
+        },
+        {
+          "name": "Blanco cálido",
+          "hex": "#FCB46C"
+        },
+        {
+          "name": "Blanco frío",
+          "hex": "#D8ECFC"
+        },
+        {
+          "name": "Apagado",
+          "hex": "#000000"
+        }
+      ]
+    },
+    {
+      "key": "ENVOLVENTES",
+      "label": "Envolventes",
+      "blurb": "Un mismo color con distinta forma temporal: attack, sustain y release.",
+      "colors": [
+        {
+          "name": "Destello",
+          "hex": "#FCFCFC"
+        },
+        {
+          "name": "Pulso corto",
+          "hex": "#FC5000"
+        },
+        {
+          "name": "Respiración",
+          "hex": "#008CFC"
+        },
+        {
+          "name": "Fundido lento",
+          "hex": "#B400FC"
+        },
+        {
+          "name": "Onda larga",
+          "hex": "#00FCB4"
+        },
+        {
+          "name": "Golpe seco",
+          "hex": "#FC003C"
+        },
+        {
+          "name": "Brasa",
+          "hex": "#FC6400"
+        },
+        {
+          "name": "Latido",
+          "hex": "#FC0000"
+        }
+      ]
+    },
+    {
+      "key": "MULTITUD",
+      "label": "Multitud",
+      "blurb": "Usan el campo chance: solo una fracción aleatoria de los badges responde.",
+      "colors": [
+        {
+          "name": "Chispeo denso",
+          "hex": "#FCFCFC"
+        },
+        {
+          "name": "Chispeo medio",
+          "hex": "#FCECB4"
+        },
+        {
+          "name": "Chispeo disperso",
+          "hex": "#B4DCFC"
+        },
+        {
+          "name": "Estrellas raras",
+          "hex": "#FCFCD8"
+        },
+        {
+          "name": "Lluvia azul",
+          "hex": "#0078FC"
+        },
+        {
+          "name": "Ascuas dispersas",
+          "hex": "#FC3C00"
+        }
+      ]
+    },
+    {
+      "key": "ESCENAS",
+      "label": "Escenas",
+      "blurb": "Paletas coherentes pensadas para lanzarse en secuencia.",
+      "colors": [
+        {
+          "name": "Atardecer · 1",
+          "hex": "#FC7800"
+        },
+        {
+          "name": "Atardecer · 2",
+          "hex": "#FC3C28"
+        },
+        {
+          "name": "Atardecer · 3",
+          "hex": "#B41450"
+        },
+        {
+          "name": "Océano · 1",
+          "hex": "#0064B4"
+        },
+        {
+          "name": "Océano · 2",
+          "hex": "#00B4C8"
+        },
+        {
+          "name": "Océano · 3",
+          "hex": "#003C8C"
+        },
+        {
+          "name": "Bosque · 1",
+          "hex": "#14A028"
+        },
+        {
+          "name": "Bosque · 2",
+          "hex": "#78C800"
+        },
+        {
+          "name": "Neón · 1",
+          "hex": "#FC00C8"
+        },
+        {
+          "name": "Neón · 2",
+          "hex": "#00FCDC"
+        },
+        {
+          "name": "Neón · 3",
+          "hex": "#C8FC00"
+        },
+        {
+          "name": "Hielo · 1",
+          "hex": "#C8F0FC"
+        },
+        {
+          "name": "Hielo · 2",
+          "hex": "#78C8FC"
+        }
+      ]
+    },
+    {
+      "key": "GRUPOS",
+      "label": "Grupos",
+      "blurb": "El mismo color restringido a un group id. Solo responden los badges de ese grupo.",
+      "colors": [
+        {
+          "name": "Broadcast",
+          "hex": "#FCFCFC"
+        },
+        {
+          "name": "Grupo 1 · rojo",
+          "hex": "#FC0000"
+        },
+        {
+          "name": "Grupo 2 · verde",
+          "hex": "#00FC00"
+        },
+        {
+          "name": "Grupo 3 · azul",
+          "hex": "#0000FC"
+        },
+        {
+          "name": "Grupo 4 · ámbar",
+          "hex": "#FCA000"
+        }
+      ]
+    }
+  ],
+  "total": 67
+}

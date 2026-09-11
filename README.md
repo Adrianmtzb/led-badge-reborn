@@ -1,18 +1,44 @@
-# LED Badge Reborn
+# LED Badge Blaster
 
-[![CI](https://github.com/Adrianmtzb/led-badge-reborn/actions/workflows/ci.yml/badge.svg)](https://github.com/Adrianmtzb/led-badge-reborn/actions/workflows/ci.yml)
+[![CI](https://github.com/Adrianmtzb/led-badge-blaster/actions/workflows/ci.yml/badge.svg)](https://github.com/Adrianmtzb/led-badge-blaster/actions/workflows/ci.yml)
 [![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
 
-Firmware para **M5Stack ATOM Lite** que controla un badge LED por infrarrojos.
-Se instala desde el navegador, sin instalar nada, y luego se maneja desde el
-móvil: el propio dispositivo levanta una red WiFi y sirve su panel de control.
+Firmware libre para **M5Stack ATOM Lite** que emite efectos de color por
+infrarrojos a badges LED compatibles con PixMob. Se instala desde el navegador
+y se maneja desde el móvil: el propio dispositivo levanta una red WiFi y sirve
+su panel de control.
+
+Proyecto independiente, desarrollado por la comunidad para interoperabilidad,
+preservación y estudio del protocolo. **No está afiliado ni respaldado por
+PixMob / Eski Inc.**
+
+---
+
+## Uso aceptable
+
+Esto emite infrarrojos a dispositivos reales, así que las reglas van antes que
+las instrucciones:
+
+> Úsalo solo con dispositivos **propios** o que tengas **permiso explícito**
+> para probar.
+>
+> **No lo uses en eventos en directo**, ni para interferir con espectáculos,
+> equipos de recinto o dispositivos de otras personas.
+
+El firmware solo envía tramas de color único: enciende un badge con un color y
+una envolvente. No escribe configuración, no toca EEPROM y no cambia el grupo de
+ningún dispositivo. Se publica sin garantía de ningún tipo; verifica siempre con
+tu propio hardware.
 
 ---
 
 ## Qué hace
 
-- Emite **55 tramas PRONTO** repartidas en tres categorías: `SPECIAL` (3),
-  `PULSO` (25) y `FADE` (27).
+- **67 efectos** repartidos en seis categorías, cada uno con su nombre y su
+  color: `CAPTURAS` (25), `BASICOS` (10), `ENVOLVENTES` (8), `MULTITUD` (6),
+  `ESCENAS` (13) y `GRUPOS` (5).
+- **Panel con los colores a la vista.** Se elige el efecto por su color, no por
+  un número; el LED de la placa muestra el que está seleccionado.
 - **Portal cautivo**: sin credenciales guardadas crea la red `LED-Badge-XXXX` y
   abre solo el panel al conectarte.
 - **Modo red**: si le das tu WiFi, se une a ella y queda en `http://led-badge.local`.
@@ -33,7 +59,7 @@ móvil: el propio dispositivo levanta una red WiFi y sirve su panel de control.
 
 La forma fácil es desde el navegador, con el cable USB conectado:
 
-**https://adrianmtzb.github.io/led-badge-reborn/**
+**https://adrianmtzb.github.io/led-badge-blaster/**
 
 Usa Web Serial, así que el firmware se descarga en tu navegador y se escribe
 directo al dispositivo; no pasa por ningún servidor. Necesita Chrome o Edge de
@@ -48,8 +74,8 @@ Si prefieres compilarlo tú, mira [Compilar desde el código](#compilar-desde-el
 1. Conéctate a la red **`LED-Badge-XXXX`** (las X son los últimos bytes de la MAC)
    con la clave **`ledbadge`**.
 2. El panel se abre solo. Si tu móvil no lo detecta, entra a `http://192.168.4.1`.
-3. Elige categoría y efecto. Ya está funcionando.
-4. Opcional: en la tarjeta **WiFi**, pulsa *Buscar redes*, elige la tuya y guarda.
+3. Toca un color y ya está emitiendo.
+4. Opcional: en **Red y ajustes**, pulsa *Buscar redes*, elige la tuya y guarda.
    El dispositivo se reinicia, se une a tu red y pasa a responder en
    `http://led-badge.local`.
 
@@ -61,8 +87,40 @@ Si prefieres compilarlo tú, mira [Compilar desde el código](#compilar-desde-el
 | Doble clic | Cambia de categoría |
 | Mantener 3 s | Olvida el WiFi y vuelve al portal |
 
-El LED indica la categoría: **blanco** `SPECIAL`, **verde** `PULSO`, **azul** `FADE`.
-Destella en rojo cada vez que emite, y en magenta al olvidar las credenciales.
+El LED de estado muestra **el color del efecto seleccionado**. Destella en
+blanco cada vez que emite, y en magenta al olvidar las credenciales.
+
+---
+
+## El catálogo
+
+Los efectos no se escriben a mano. Son exportaciones literales de un generador
+de tramas que corre en el navegador
+([led-badge-encoder](https://github.com/Adrianmtzb/led-badge-encoder), MIT), y de
+ahí salen tanto el firmware como la paleta de la página de instalación:
+
+```
+data/presets/*.json                 exportación literal del generador
+        │
+        └── scripts/gen_catalog.py
+                ├── firmware/led_badge_blaster/pronto_data.h    las 67 tramas
+                ├── firmware/led_badge_blaster/catalog_data.cpp nombres y colores
+                └── docs/catalog.json                           paleta de la web
+```
+
+```bash
+make presets   # reexporta los JSON desde el generador (Playwright + Chrome)
+make catalog   # regenera los tres ficheros
+```
+
+`make check-catalog` falla si lo que hay en el disco no cuadra con los presets,
+así que el CI no deja que se desincronicen. Los ficheros generados llevan una
+cabecera que lo avisa: no se editan a mano.
+
+Cada JSON conserva, además de la trama, el color solicitado, el color ya
+cuantizado por el badge, los bytes lógicos y codificados y el bitstream. El
+firmware solo necesita tres de esos campos; el resto se guarda porque es lo que
+permite auditar de dónde salió cada byte.
 
 ---
 
@@ -78,15 +136,18 @@ el `WebServer` del core ESP32 no lo parsea.
 
 | Método | Ruta | Parámetros | Devuelve |
 |---|---|---|---|
-| `GET` | `/api/commands` | — | Lista de efectos con su índice |
+| `GET` | `/api/commands` | — | Categorías y efectos, con nombre y color |
 | `GET` | `/api/state` | — | Categoría, posición, efecto actual y estado de red |
 | `GET` | `/api/scan` | — | Redes WiFi visibles |
-| `POST` | `/api/send` | `index` (0–54) | `{"ok":true}` |
+| `POST` | `/api/send` | `index` (0–66) | `{"ok":true}` |
 | `POST` | `/api/wifi` | `ssid`, `pass` | Guarda y reinicia |
 | `POST` | `/api/forget` | — | Borra credenciales y reinicia |
 
 ```bash
 curl http://led-badge.local/api/commands
+# {"categories":[{"key":"CAPTURAS","label":"Capturas","blurb":"…","count":25}, …],
+#  "commands":[{"i":0,"id":"CAP_00","name":"Rojo","note":"P_PULSO_00",
+#               "color":"#F02000","mode":"CAPTURAS"}, …]}
 
 curl -X POST http://led-badge.local/api/send \
   -H 'X-Requested-With: curl' \
@@ -101,15 +162,21 @@ conexión se corta: el cliente suele estar hablando por el AP que se va a tumbar
 ## Compilar desde el código
 
 Hace falta [arduino-cli](https://arduino.github.io/arduino-cli/) con el core de
-M5Stack y dos librerías:
+M5Stack y dos librerías. `make setup` comprueba lo que tienes e instala el resto:
+
+```bash
+make setup
+make build
+make flash
+```
+
+O a mano, si prefieres:
 
 ```bash
 arduino-cli core install m5stack:esp32
 arduino-cli lib install "IRremoteESP8266" "Adafruit NeoPixel"
-```
 
-```bash
-cd firmware/led_badge_reborn
+cd firmware/led_badge_blaster
 arduino-cli compile --fqbn m5stack:esp32:m5stack_atom --export-binaries .
 arduino-cli upload  --fqbn m5stack:esp32:m5stack_atom -p /dev/cu.usbserial-XXXX .
 ```
@@ -119,17 +186,19 @@ Tarda un par de minutos la primera vez. Si la subida falla con *port is busy*,
 casi siempre es un monitor serie abierto ocupando el puerto.
 
 Hay además una consola serie a 115200 baudios para depurar: escribe `help`.
+`cats` lista las categorías y `list` los efectos de la actual con su color.
 
 ---
 
 ## Estructura
 
 ```
-firmware/led_badge_reborn/
-├── led_badge_reborn.ino   solo setup() y loop()
+firmware/led_badge_blaster/
+├── led_badge_blaster.ino  solo setup() y loop()
 ├── config.h               pines, tiempos, identidad
-├── pronto_data.h          las 55 tramas IR en crudo
-├── catalog.*              tabla de efectos y navegación por categoría
+├── pronto_data.h          las 67 tramas IR en crudo      (generado)
+├── catalog_data.cpp       nombres, colores y categorías  (generado)
+├── catalog.*              navegación por categoría
 ├── ir_sender.*            parser PRONTO y emisión
 ├── status_led.*           LED de estado, sin bloqueos
 ├── button.*               clic, doble clic y pulsación larga
@@ -138,10 +207,32 @@ firmware/led_badge_reborn/
 ├── web_api.*              rutas HTTP
 └── console.*              consola serie
 
+data/presets/              tramas exportadas del generador (fuente de verdad)
+scripts/
+├── export_presets.mjs     reexporta los presets del generador
+├── gen_catalog.py         presets → firmware + docs/catalog.json
+└── check-manifest.py      valida offsets y versiones del instalador
 docs/                      instalador web (los .bin los genera el CI)
 ```
 
 ---
+
+## Licencia y atribuciones
+
+Este firmware es [MIT](LICENSE) © Adrianmb.
+
+El protocolo que emite lo documentó la comunidad mediante ingeniería inversa y
+se publicó bajo MIT. Las atribuciones completas, junto con las notas sobre
+marcas y patentes de terceros, están en
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Este repositorio no contiene firmware extraído, volcados de memoria ni código
+propietario de terceros.
+
+PixMob es una marca de su titular y se menciona solo para describir
+compatibilidad. Si representas a un titular de derechos y ves un problema
+concreto, abre un [issue](https://github.com/Adrianmtzb/led-badge-blaster/issues)
+o usa los canales de [SECURITY.md](SECURITY.md).
 
 ## Contribuir
 
@@ -151,7 +242,3 @@ el contexto y las trampas conocidas del proyecto.
 
 Otros documentos: [CHANGELOG.md](CHANGELOG.md) y [SECURITY.md](SECURITY.md), que
 explica qué protege este firmware y qué no.
-
-## Licencia
-
-[MIT](LICENSE) © Adrianmb

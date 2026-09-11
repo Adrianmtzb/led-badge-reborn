@@ -1,8 +1,8 @@
-# LED Badge Reborn — atajos de desarrollo.
+# LED Badge Blaster — atajos de desarrollo.
 # `make` a secas lista lo que hay.
 
 FQBN      := m5stack:esp32:m5stack_atom
-SKETCH    := firmware/led_badge_reborn
+SKETCH    := firmware/led_badge_blaster
 BUILD     := $(SKETCH)/build/m5stack.esp32.m5stack_atom
 CORE      := m5stack:esp32
 BOARD_URL := https://static-cdn.m5stack.com/resource/arduino/package_m5stack_index.json
@@ -22,11 +22,11 @@ BAUD ?= 115200
 DATA_DIR = $(shell arduino-cli config get directories.data 2>/dev/null || echo $$HOME/.arduino15)
 
 .DEFAULT_GOAL := help
-.PHONY: help setup deps build bootapp0 flash monitor check site serve clean bump
+.PHONY: help setup deps presets catalog build bootapp0 flash monitor check check-catalog site serve clean bump
 
 help: ## Muestra esta ayuda
 	@echo
-	@echo "LED Badge Reborn"
+	@echo "LED Badge Blaster"
 	@echo
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "} {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -41,6 +41,12 @@ deps: ## Instala el core y las librerías (lo usa también el CI)
 	arduino-cli core update-index --additional-urls "$(BOARD_URL)"
 	arduino-cli core install $(CORE) --additional-urls "$(BOARD_URL)"
 	arduino-cli lib install $(LIBS)
+
+catalog: ## Regenera el catalogo de efectos desde data/presets/*.json
+	@python3 scripts/gen_catalog.py
+
+presets: ## Reexporta data/presets/*.json desde el generador web (necesita node)
+	@node scripts/export_presets.mjs
 
 build: ## Compila el firmware
 	arduino-cli compile --fqbn $(FQBN) --export-binaries --warnings default $(SKETCH)
@@ -66,15 +72,18 @@ monitor: ## Abre la consola serie (escribe 'help' dentro; Ctrl-C para salir)
 	@test -n "$(PORT)" || { echo "No hay ningún puerto serie a la vista."; exit 1; }
 	arduino-cli monitor -p $(PORT) --config baudrate=$(BAUD)
 
-check: ## Valida los offsets del manifest y que las versiones cuadren
+check: check-catalog ## Valida el manifest, las versiones y el catalogo generado
 	@python3 scripts/check-manifest.py
+
+check-catalog: ## Comprueba que los ficheros generados cuadran con data/presets/
+	@python3 scripts/gen_catalog.py --check
 
 site: build bootapp0 ## Arma el instalador web en _site/, igual que el CI
 	@rm -rf _site && mkdir -p _site
-	@cp docs/index.html docs/manifest.json          _site/
-	@cp $(BUILD)/led_badge_reborn.ino.bin           _site/led_badge_reborn.bin
-	@cp $(BUILD)/led_badge_reborn.ino.bootloader.bin _site/bootloader.bin
-	@cp $(BUILD)/led_badge_reborn.ino.partitions.bin _site/partitions.bin
+	@cp docs/index.html docs/manifest.json docs/catalog.json _site/
+	@cp $(BUILD)/led_badge_blaster.ino.bin           _site/led_badge_blaster.bin
+	@cp $(BUILD)/led_badge_blaster.ino.bootloader.bin _site/bootloader.bin
+	@cp $(BUILD)/led_badge_blaster.ino.partitions.bin _site/partitions.bin
 	@cp $(BUILD)/boot_app0.bin                      _site/boot_app0.bin
 	@echo "Instalador armado en _site/"
 

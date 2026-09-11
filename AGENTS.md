@@ -8,13 +8,43 @@ Contexto para asistentes de IA que trabajen en este repositorio. Lee también
 Firmware Arduino/C++ para **M5Stack ATOM Lite** (ESP32 clásico). Emite tramas
 PRONTO por infrarrojos y sirve un panel web desde el propio dispositivo.
 
-La carpeta del proyecto puede llamarse `dtmf_ir` en algunas máquinas por motivos
-históricos. El proyecto es `led-badge-reborn`.
+La carpeta del proyecto puede llamarse `dtmf_ir` o `led_badge_reborn` en
+máquinas viejas, por motivos históricos. El proyecto es `led-badge-blaster`.
+
+## Posicionamiento (no lo cambies por descuido)
+
+Es una herramienta independiente **compatible con** badges PixMob, no un
+producto de PixMob. Eso tiene consecuencias concretas en el código:
+
+- No uses "PixMob" en nombres de fichero, carpetas, identificadores ni títulos.
+  Solo aparece en frases que describen compatibilidad, y siempre junto al aviso
+  de no afiliación.
+- No metas logotipos ni estética de la marca, ni presets con nombres de artistas,
+  giras o recintos.
+- Las atribuciones MIT de `THIRD_PARTY_NOTICES.md` son obligatorias: la licencia
+  del protocolo exige conservarlas. No las borres al reorganizar docs.
+- No añadas firmware extraído, volcados de flash ni código propietario.
+- El aviso de uso aceptable está en el README, en `web_ui.h` y en
+  `docs/index.html`. Si rediseñas alguna de las dos páginas, tiene que seguir
+  estando.
+- Todos los comandos son tramas de color único. Si algún día se añaden comandos
+  persistentes (EEPROM, cambio de grupo, reset), van en una sección aparte
+  marcada como avanzada, no mezclados con los colores.
+
+## El catálogo es generado
+
+`pronto_data.h`, `catalog_data.cpp` y `docs/catalog.json` **los escribe
+`scripts/gen_catalog.py`**. Llevan cabecera de aviso. Editarlos a mano se
+pierde en la siguiente regeneración y además rompe `make check-catalog`.
+
+La fuente de verdad es `data/presets/*.json`, que son exportaciones literales
+del generador web. Para cambiar efectos: se reexportan (`make presets`) y se
+regenera (`make catalog`).
 
 ## Comandos
 
 ```bash
-cd firmware/led_badge_reborn
+cd firmware/led_badge_blaster
 arduino-cli compile --fqbn m5stack:esp32:m5stack_atom --export-binaries .
 arduino-cli upload  --fqbn m5stack:esp32:m5stack_atom -p /dev/cu.usbserial-XXXX .
 ```
@@ -26,7 +56,7 @@ arduino-cli upload  --fqbn m5stack:esp32:m5stack_atom -p /dev/cu.usbserial-XXXX 
 - Si la subida falla con *port is busy*, hay un monitor serie abierto. En VS Code
   se ve con `lsof /dev/cu.usbserial-*` como proceso `serial-mo`. Hay que pedirle
   al usuario que lo cierre; no se puede resolver desde el agente.
-- Ocupación actual: ~33 % de flash y ~14 % de RAM.
+- Ocupación actual: ~33 % de flash y ~14 % de RAM, con los 67 efectos dentro.
 
 ## Trampas ya pagadas
 

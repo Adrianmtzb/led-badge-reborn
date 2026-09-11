@@ -5,6 +5,50 @@ Este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+## [2.0.0] - 2026-09-11
+
+Se renombra el proyecto y se reemplaza el catálogo de efectos por completo.
+
+### Cambios incompatibles
+
+- **El proyecto pasa a llamarse `led-badge-blaster`.** Cambia la carpeta del
+  sketch (`firmware/led_badge_blaster/`), el nombre del binario y la URL del
+  instalador. Quien tuviera el repositorio clonado necesita volver a clonar o
+  actualizar el remoto.
+- **El catálogo se sustituye entero.** Las categorías `SPECIAL`, `PULSO` y
+  `FADE` desaparecen; los índices de `/api/send` ya no corresponden a los
+  mismos efectos y el rango pasa de 0–54 a 0–66.
+- **`/api/commands` devuelve un objeto**, no un array: `{categories, commands}`.
+  Cada comando trae `id`, `name`, `note` y `color` en lugar de `label`.
+- **`/api/state` devuelve `name`** (el nombre legible) en lugar de `label`.
+
+### Añadido
+
+- 67 efectos en seis categorías (`CAPTURAS`, `BASICOS`, `ENVOLVENTES`,
+  `MULTITUD`, `ESCENAS`, `GRUPOS`), cada uno con nombre y color propios.
+- Las tramas se generan desde `data/presets/*.json` con
+  `scripts/gen_catalog.py`; `scripts/export_presets.mjs` reexporta esos presets
+  del generador web. `make check-catalog` impide que se desincronicen.
+- `docs/catalog.json`: la paleta real del firmware, que consume la página de
+  instalación para no tener una segunda copia de los colores.
+- Comandos `cats` y `list` en la consola serie.
+- `THIRD_PARTY_NOTICES.md` con las atribuciones MIT del protocolo y las notas
+  sobre marcas y patentes de terceros.
+- Sección de uso aceptable en el README, en el panel y en la página pública.
+
+### Cambiado
+
+- **Panel rediseñado**: los efectos se eligen por su color en una rejilla de
+  muestras, con el efecto activo en cabecera. La configuración de red queda
+  plegada, porque no es lo que se viene a hacer.
+- **Página de instalación rediseñada**, con la paleta real del firmware, los
+  pasos de instalación y las atribuciones.
+- **El LED de estado muestra el color del efecto seleccionado**, no la
+  categoría. El destello al emitir pasa de rojo a blanco, para que se vea
+  también sobre los rojos y naranjas del catálogo.
+- La navegación por categoría ya no mantiene un mapa de índices en RAM: los
+  comandos llegan agrupados y basta con el primer índice y la longitud.
+
 ## [1.0.0] - 2026-09-11
 
 Primera versión pública.
@@ -26,5 +70,6 @@ Primera versión pública.
 - Consola serie de depuración a 115200 baudios.
 - Instalador web con ESP Web Tools, sin necesidad de instalar nada.
 
-[Sin publicar]: https://github.com/Adrianmtzb/led-badge-reborn/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/Adrianmtzb/led-badge-reborn/releases/tag/v1.0.0
+[Sin publicar]: https://github.com/Adrianmtzb/led-badge-blaster/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/Adrianmtzb/led-badge-blaster/releases/tag/v2.0.0
+[1.0.0]: https://github.com/Adrianmtzb/led-badge-blaster/releases/tag/v1.0.0

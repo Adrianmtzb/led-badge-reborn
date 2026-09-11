@@ -40,10 +40,14 @@ compila. Lo que el CI **no** puede comprobar es lo importante de este proyecto:
 3. **Si tocaste `web_ui.h`**, ábrelo en un móvil de verdad. El panel se diseñó
    para eso y hay diferencias reales con el escritorio.
 
+4. **Si tocaste los efectos**, no edites los ficheros generados. La fuente de
+   verdad es `data/presets/*.json`; se reexporta con `make presets` y se
+   regenera con `make catalog`. `make check-catalog` falla si te lo saltas.
+
 Para compilar en local:
 
 ```bash
-cd firmware/led_badge_reborn
+cd firmware/led_badge_blaster
 arduino-cli compile --fqbn m5stack:esp32:m5stack_atom .
 ```
 
@@ -75,6 +79,25 @@ Otras convenciones que conviene respetar:
   índices.
 - Todo lo que llegue de fuera (parámetros HTTP, tramas PRONTO, SSIDs) se valida
   antes de usarse.
+- `pronto_data.h`, `catalog_data.cpp` y `docs/catalog.json` son generados. No se
+  editan a mano; llevan cabecera de aviso.
+
+### Posicionamiento del proyecto
+
+Es una herramienta independiente **compatible con** badges PixMob, no un
+producto de PixMob. Al contribuir, respeta esto:
+
+- "PixMob" no aparece en nombres de fichero, carpetas ni identificadores. Solo
+  en frases que describen compatibilidad, junto al aviso de no afiliación.
+- Nada de logotipos ni estética de la marca, ni presets con nombres de artistas,
+  giras o recintos.
+- Las atribuciones MIT de [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) son
+  obligatorias: la licencia del protocolo exige conservarlas.
+- No se añade firmware extraído, volcados de flash ni código propietario.
+- El aviso de uso aceptable vive en el README, en `web_ui.h` y en
+  `docs/index.html`. Si rediseñas una de las páginas, tiene que seguir estando.
+- Los comandos persistentes (EEPROM, cambio de grupo, reset) no se mezclan con
+  los colores: si se añaden, van en una sección marcada como avanzada.
 
 ### Mensajes de commit
 
@@ -94,14 +117,15 @@ No añadas firmas ni menciones de herramientas de IA en los commits.
 
 ## Publicar una versión (mantenedor)
 
-1. Subir `FW_VERSION` en `firmware/led_badge_reborn/config.h` y `version` en
-   `docs/manifest.json`. **Tienen que coincidir**: el CI falla si no.
+1. Subir la versión en los dos sitios con `make bump VERSION=1.2.3`.
+   `FW_VERSION` (en `firmware/led_badge_blaster/config.h`) y `version` (en
+   `docs/manifest.json`) **tienen que coincidir**: el CI falla si no.
 2. Anotar los cambios en [CHANGELOG.md](CHANGELOG.md).
 3. Fusionar eso en `main` por PR, como cualquier otro cambio.
 4. Crear el tag y empujarlo:
 
    ```bash
-   git tag -a v1.2.3 -m "LED Badge Reborn v1.2.3"
+   git tag -a v1.2.3 -m "LED Badge Blaster v1.2.3"
    git push origin v1.2.3
    ```
 
