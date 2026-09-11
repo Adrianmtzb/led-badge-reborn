@@ -20,7 +20,7 @@ jobs:
     name: Compilar el firmware
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: arduino/setup-arduino-cli@v2
 
@@ -64,7 +64,7 @@ jobs:
     name: Validar el instalador web
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # El instalador falla en silencio si el manifest no cuadra con lo que el
       # CI va a publicar, o si anuncia una version distinta a la del firmware.
@@ -110,7 +110,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v4
         with:
@@ -139,7 +139,7 @@ jobs:
       name: github-pages
       url: ${{ steps.desplegar.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v4
         with:
