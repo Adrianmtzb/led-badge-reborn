@@ -5,6 +5,12 @@ Este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+### Añadido
+
+- La versión del firmware se muestra en el pie del panel, leída de
+  `/api/state`, y la que va a escribir el instalador aparece junto al botón de
+  la página pública. Comparar las dos dice si una reinstalación entró.
+
 ### Corregido
 
 - El doble toque en el panel ya no hace zoom ni arrastra el retardo de ~300 ms

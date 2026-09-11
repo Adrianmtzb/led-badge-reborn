@@ -106,6 +106,9 @@ input{width:100%;padding:.6rem .7rem;border:1px solid var(--line);border-radius:
 footer{margin:2rem 0;padding-top:1rem;border-top:1px solid var(--line);
   font-size:.75rem;line-height:1.55;color:var(--dim)}
 footer b{color:var(--text);font-weight:600}
+footer p{margin:0 0 .7rem}
+#ver{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem}
+#ver b{font-weight:600}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -142,10 +145,11 @@ footer b{color:var(--text);font-weight:600}
 </details>
 
 <footer>
-  <b>Herramienta independiente, compatible con badges PixMob.</b> No está
+  <p id="ver">Firmware <b>—</b></p>
+  <p><b>Herramienta independiente, compatible con badges PixMob.</b> No está
   afiliada ni respaldada por PixMob / Eski Inc. Úsala solo con dispositivos
   propios o que tengas permiso para probar. No la uses en eventos en directo ni
-  para interferir con espectáculos, equipos de recinto o dispositivos ajenos.
+  para interferir con espectáculos, equipos de recinto o dispositivos ajenos.</p>
 </footer>
 
 <script>
@@ -245,7 +249,22 @@ async function send(i){
   }finally{sending=false;pending=null}
 }
 
-async function refresh(){st=await j('/api/state');paintLive();drawGrid()}
+async function refresh(){
+  st=await j('/api/state');
+  drawVersion();
+  paintLive();
+  drawGrid();
+}
+
+// La versión sale de /api/state, así que es la que corre de verdad en la placa.
+// Sirve para comprobar de un vistazo si una reinstalación entró.
+function drawVersion(){
+  const el=$('#ver');
+  el.textContent='Firmware ';
+  const b=document.createElement('b');
+  b.textContent=st.version?'v'+st.version:'desconocida';
+  el.appendChild(b);
+}
 
 const level=r=>r>=-55?4:r>=-65?3:r>=-75?2:1;
 

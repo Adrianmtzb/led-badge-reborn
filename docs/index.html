@@ -51,6 +51,8 @@ button[slot=activate]{
 }
 button[slot=activate]:hover{background:var(--brand);color:#000}
 .cta .req{font-size:.85rem;color:var(--dim);max-width:20ch}
+.cta .req b{display:block;color:var(--text);font-weight:600;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem}
 .nope{display:block;margin:1.9rem 0 0;padding:.8rem 1rem;font-size:.9rem;
   color:var(--warn);border:1px solid var(--line);border-radius:11px;background:var(--sunk)}
 .mark{margin:1.6rem 0 0;font-size:.82rem;line-height:1.55;color:var(--dim);max-width:52ch}
@@ -132,7 +134,7 @@ footer p:last-child{margin:0}
           Web Serial solo funciona sobre HTTPS o en localhost.
         </span>
       </esp-web-install-button>
-      <span class="req">Chrome o Edge de escritorio, con el cable USB puesto.</span>
+      <span class="req"><b id="ver">&nbsp;</b>Chrome o Edge de escritorio, con el cable USB puesto.</span>
     </div>
 
     <p class="mark">Proyecto independiente de la comunidad, compatible con
@@ -151,7 +153,9 @@ footer p:last-child{margin:0}
       <li><strong>Cierra el monitor serie.</strong>
         <p>Si el Arduino IDE o un <code>screen</code> tienen el puerto abierto, la instalación falla.</p></li>
       <li><strong>Pulsa Instalar y elige el puerto <code>usbserial</code>.</strong>
-        <p>Tarda menos de un minuto. Al acabar, el dispositivo arranca solo.</p></li>
+        <p>Tarda menos de un minuto. Al acabar, el dispositivo arranca solo. El
+          panel muestra abajo la versión que quedó instalada, para comprobar que
+          coincide con la de aquí.</p></li>
     </ol>
   </section>
 
@@ -251,6 +255,16 @@ footer p:last-child{margin:0}
 // paleta de esta página no puede quedarse atrás respecto a lo que se instala.
 const box = document.getElementById('cats');
 const strip = document.getElementById('strip');
+
+// La versión sale del propio manifest que va a usar el instalador, así que es
+// la que se escribe. El panel del dispositivo muestra la que tiene puesta, y
+// comparar las dos dice si hace falta reinstalar.
+try {
+  const res = await fetch('manifest.json');
+  if (res.ok) document.getElementById('ver').textContent = 'v' + (await res.json()).version;
+} catch (e) {
+  document.getElementById('ver').remove();
+}
 
 try {
   const res = await fetch('catalog.json');
