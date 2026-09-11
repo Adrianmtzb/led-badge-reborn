@@ -54,7 +54,7 @@ jobs:
           cp "$origen" "$SKETCH/build/m5stack.esp32.m5stack_atom/"
 
       - name: Publicar los binarios
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: firmware
           path: ${{ env.SKETCH }}/build/m5stack.esp32.m5stack_atom/*.bin
