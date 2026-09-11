@@ -1,0 +1,13 @@
+# Artefactos de compilación de arduino-cli
+build/
+
+# Los binarios del instalador los genera el CI al publicar un tag; en el repo
+# solo vive la página y su manifest.
+docs/*.bin
+
+# macOS
+.DS_Store
+
+# Ajustes locales del editor
+.vscode/
+_site/

@@ -1,0 +1,37 @@
+name: Proponer una mejora
+description: Una idea o una funcionalidad que falta
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qué problema resuelve
+      description: >
+        Empieza por el problema, no por la solución. Entender qué te frena
+        ayuda más que la propuesta concreta.
+    validations:
+      required: true
+
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Qué propones
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Qué otras opciones consideraste
+      description: Bórralo si no pensaste en ninguna.
+
+  - type: checkboxes
+    id: limites
+    attributes:
+      label: Antes de enviar
+      description: >
+        Dos límites del proyecto que conviene tener presentes: el ATOM Lite no
+        lleva micrófono, y el control es por IR con tramas fijas, así que no se
+        pueden inventar efectos nuevos ni reaccionar frame a frame.
+      options:
+        - label: He tenido en cuenta esos límites
