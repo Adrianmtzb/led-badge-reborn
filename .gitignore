@@ -1,0 +1,5 @@
+# Artefactos de compilación de arduino-cli
+build/
+
+# macOS
+.DS_Store

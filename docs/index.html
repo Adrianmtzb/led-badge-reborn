@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Instalar LED Badge Reborn</title>
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 34rem;
+      margin: 4rem auto;
+      padding: 0 1.5rem;
+      line-height: 1.6;
+    }
+    h1 { margin-bottom: .25rem; }
+    .sub { opacity: .7; margin-top: 0; }
+    ul { padding-left: 1.2rem; }
+    .unsupported { color: #b00; }
+    footer { margin-top: 3rem; font-size: .9rem; opacity: .7; }
+  </style>
+</head>
+<body>
+  <h1>LED Badge Reborn</h1>
+  <p class="sub">Firmware para M5Stack ATOM Lite: controla el badge por infrarrojos desde el navegador.</p>
+
+  <ol>
+    <li>Conecta el ATOM Lite por USB.</li>
+    <li>Cierra cualquier monitor serie que tengas abierto.</li>
+    <li>Pulsa Instalar y elige el puerto <code>usbserial</code>.</li>
+  </ol>
+
+  <esp-web-install-button manifest="manifest.json">
+    <button slot="activate">Instalar LED Badge Reborn</button>
+    <span slot="unsupported" class="unsupported">
+      Tu navegador no soporta Web Serial. Usa Chrome o Edge de escritorio.
+    </span>
+    <span slot="not-allowed" class="unsupported">
+      Solo funciona sobre HTTPS o en localhost.
+    </span>
+  </esp-web-install-button>
+
+  <h2>Después de instalar</h2>
+  <p>El cable ya no hace falta: el dispositivo levanta su propia red WiFi.</p>
+  <ol>
+    <li>Conéctate a la red <code>LED-Badge-XXXX</code> con la clave <code>ledbadge</code>.</li>
+    <li>El panel de control se abre solo. Si no, entra a <code>http://192.168.4.1</code>.</li>
+    <li>Desde ahí eliges efecto y categoría, y puedes darle las credenciales de tu WiFi
+      para tenerlo en tu red (luego responde en <code>http://led-badge.local</code>).</li>
+  </ol>
+
+  <h2>Botón del dispositivo</h2>
+  <ul>
+    <li><strong>Clic simple:</strong> envía el efecto actual y avanza al siguiente.</li>
+    <li><strong>Doble clic:</strong> cambia de categoría.</li>
+    <li><strong>Pulsación larga (3 s):</strong> olvida el WiFi y vuelve al portal.</li>
+    <li><strong>LED:</strong> blanco = SPECIAL, verde = PULSO, azul = FADE. Destello rojo al enviar.</li>
+  </ul>
+
+  <footer>
+    Instalación vía Web Serial. El firmware se descarga en tu navegador y se
+    escribe directamente al dispositivo; no pasa por ningún servidor.
+  </footer>
+</body>
+</html>
