@@ -1,5 +1,8 @@
 # LED Badge Reborn
 
+[![CI](https://github.com/Adrianmtzb/led-badge-reborn/actions/workflows/ci.yml/badge.svg)](https://github.com/Adrianmtzb/led-badge-reborn/actions/workflows/ci.yml)
+[![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+
 Firmware para **M5Stack ATOM Lite** que controla un badge LED por infrarrojos.
 Se instala desde el navegador, sin instalar nada, y luego se maneja desde el
 móvil: el propio dispositivo levanta una red WiFi y sirve su panel de control.
@@ -138,7 +141,7 @@ firmware/led_badge_reborn/
 ├── web_api.*              rutas HTTP
 └── console.*              consola serie
 
-docs/                      instalador web (GitHub Pages)
+docs/                      instalador web (los .bin los genera el CI)
 ```
 
 ---
@@ -148,6 +151,10 @@ docs/                      instalador web (GitHub Pages)
 Se aceptan PRs. Lee [CONTRIBUTING.md](CONTRIBUTING.md) para el modelo de ramas y
 cómo probar los cambios. Si usas un asistente de IA, [AGENTS.md](AGENTS.md) tiene
 el contexto y las trampas conocidas del proyecto.
+
+Otros documentos: [CHANGELOG.md](CHANGELOG.md),
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) y [SECURITY.md](SECURITY.md), que
+explica qué protege este firmware y qué no.
 
 ## Licencia
 

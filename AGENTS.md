@@ -72,5 +72,5 @@ Cosas que ya están resueltas y no hay que desmontar por descuido:
 
 - Comentarios y mensajes de commit **en español**.
 - **No añadas firmas ni atribuciones de IA** en commits, PRs, código ni docs.
-- No regeneres `docs/*.bin` salvo que se esté publicando una versión.
+- No añadas binarios a `docs/`: están ignorados a propósito y los genera el CI.
 - Si no puedes verificar algo en hardware, dilo en lugar de darlo por bueno.

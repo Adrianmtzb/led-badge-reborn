@@ -1,0 +1,70 @@
+name: Reportar un fallo
+description: Algo no funciona como debería
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportarlo. Cuanto más concreto, antes se arregla.
+
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: Qué pasa
+      description: Qué esperabas que ocurriera y qué ocurrió en su lugar.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo reproducirlo
+      placeholder: |
+        1. Arranco el dispositivo sin credenciales guardadas
+        2. Me conecto a LED-Badge-XXXX desde el móvil
+        3. Pulso "Buscar redes"
+        4. ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versión del firmware
+      description: La ves al arrancar por la consola serie, o en `/api/state`.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modo
+    attributes:
+      label: Modo de red
+      description: Muchos comportamientos dependen de esto.
+      options:
+        - Portal (el dispositivo crea su propia red)
+        - Conectado a mi WiFi
+        - No aplica / no lo sé
+    validations:
+      required: true
+
+  - type: input
+    id: cliente
+    attributes:
+      label: Desde dónde lo usabas
+      placeholder: "Chrome en Android 14 / Safari en iPhone / curl"
+
+  - type: textarea
+    id: serie
+    attributes:
+      label: Salida de la consola serie
+      description: A 115200 baudios. Pega lo que salga desde el arranque; suele ser lo más revelador.
+      render: text
+
+  - type: checkboxes
+    id: hardware
+    attributes:
+      label: Hardware
+      options:
+        - label: Estoy usando un M5Stack ATOM Lite
+        - label: Uso otra placa o un emisor IR externo (cuéntalo arriba)

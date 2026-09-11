@@ -1,0 +1,166 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FQBN: m5stack:esp32:m5stack_atom
+  BOARD_URL: https://static-cdn.m5stack.com/resource/arduino/package_m5stack_index.json
+  SKETCH: firmware/led_badge_reborn
+
+jobs:
+  compilar:
+    name: Compilar el firmware
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: arduino/setup-arduino-cli@v2
+
+      # El core de ESP32 pesa varios cientos de megas y tarda en bajar; sin
+      # cache cada ejecución se iría en la instalación.
+      - name: Cachear core y librerías
+        uses: actions/cache@v4
+        with:
+          path: ~/.arduino15
+          key: arduino-${{ runner.os }}-${{ hashFiles('.github/workflows/ci.yml') }}
+
+      - name: Instalar el core de M5Stack
+        run: |
+          arduino-cli core update-index --additional-urls "$BOARD_URL"
+          arduino-cli core install m5stack:esp32 --additional-urls "$BOARD_URL"
+
+      # Versiones fijas: una actualización de librería no debe romper el build
+      # sin que nadie haya tocado el código.
+      - name: Instalar librerías
+        run: arduino-cli lib install "IRremoteESP8266@2.9.0" "Adafruit NeoPixel@1.15.2"
+
+      - name: Compilar
+        run: arduino-cli compile --fqbn "$FQBN" --export-binaries --warnings default "$SKETCH"
+
+      # boot_app0.bin no lo genera la compilación: viene con el core instalado.
+      # El instalador web lo necesita como cuarta parte.
+      - name: Añadir boot_app0.bin
+        run: |
+          origen=$(find ~/.arduino15/packages/m5stack/hardware/esp32 -name boot_app0.bin | head -1)
+          test -n "$origen" || { echo "No se encontro boot_app0.bin en el core"; exit 1; }
+          cp "$origen" "$SKETCH/build/m5stack.esp32.m5stack_atom/"
+
+      - name: Publicar los binarios
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: ${{ env.SKETCH }}/build/m5stack.esp32.m5stack_atom/*.bin
+          if-no-files-found: error
+
+  instalador:
+    name: Validar el instalador web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # El instalador falla en silencio si el manifest no cuadra con lo que el
+      # CI va a publicar, o si anuncia una version distinta a la del firmware.
+      - name: Comprobar manifest y versión
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, re, sys
+
+          # Offsets verificados byte a byte contra el merged.bin. Los nombres son
+          # los que arma el job de publicacion a partir de los binarios.
+          ESPERADO = {
+              "bootloader.bin":       4096,
+              "partitions.bin":      32768,
+              "boot_app0.bin":       57344,
+              "led_badge_reborn.bin": 65536,
+          }
+
+          manifest = json.loads(pathlib.Path("docs/manifest.json").read_text())
+          partes = {p["path"]: p["offset"] for b in manifest["builds"] for p in b["parts"]}
+
+          if partes != ESPERADO:
+              sys.exit(f"Las partes del manifest no cuadran.\n"
+                       f"  esperado: {ESPERADO}\n"
+                       f"  manifest: {partes}")
+
+          config = pathlib.Path("firmware/led_badge_reborn/config.h").read_text()
+          m = re.search(r'#define\s+FW_VERSION\s+"([^"]+)"', config)
+          if not m:
+              sys.exit("No se encontro FW_VERSION en config.h")
+
+          if m.group(1) != manifest["version"]:
+              sys.exit(f'Versiones distintas: config.h dice {m.group(1)} '
+                       f'y manifest.json dice {manifest["version"]}')
+
+          print(f'OK: {manifest["name"]} {manifest["version"]}')
+          PY
+
+  publicar:
+    name: Publicar la release
+    needs: [compilar, instalador]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: dist
+
+      - name: Crear la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            dist/led_badge_reborn.ino.bin \
+            dist/led_badge_reborn.ino.merged.bin
+
+  pagina:
+    name: Desplegar el instalador
+    needs: [compilar, instalador]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.desplegar.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: firmware
+          path: dist
+
+      # Los binarios no viven en el repo: se arman aqui con los nombres que
+      # espera el manifest, para que la pagina publicada nunca vaya por detras
+      # del firmware.
+      - name: Armar el sitio
+        run: |
+          mkdir -p _site
+          cp docs/index.html docs/manifest.json          _site/
+          cp dist/led_badge_reborn.ino.bin              _site/led_badge_reborn.bin
+          cp dist/led_badge_reborn.ino.bootloader.bin   _site/bootloader.bin
+          cp dist/led_badge_reborn.ino.partitions.bin   _site/partitions.bin
+          cp dist/boot_app0.bin                         _site/boot_app0.bin
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: desplegar
+        uses: actions/deploy-pages@v4

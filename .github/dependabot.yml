@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Las actions de terceros se fijan por versión mayor; esto avisa cuando salen
+  # parches, que en CI suelen ser correcciones de seguridad.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore"

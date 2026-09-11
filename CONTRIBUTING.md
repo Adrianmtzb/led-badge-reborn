@@ -27,31 +27,35 @@ Prefijos de rama: `feat/`, `fix/`, `docs/`, `refactor/`, `chore/`.
 
 ## Antes de mandar la PR
 
-No hay CI todavía, así que la verificación es manual:
+El CI compila cada PR automáticamente, así que no hace falta que demuestres que
+compila. Lo que el CI **no** puede comprobar es lo importante de este proyecto:
 
-1. **Que compile.**
+1. **Que funcione en hardware.** El temporizado del botón, la emisión IR y el
+   portal cautivo no se pueden verificar sin la placa delante. Cuenta en la PR
+   qué probaste.
 
-   ```bash
-   cd firmware/led_badge_reborn
-   arduino-cli compile --fqbn m5stack:esp32:m5stack_atom .
-   ```
-
-2. **Que funcione en hardware.** Casi todo lo interesante de este proyecto
-   (temporizado del botón, emisión IR, portal cautivo) no se puede comprobar sin
-   la placa delante. Dinos en la PR qué probaste.
-
-3. **Si tocaste la red**, prueba los dos modos: arranque sin credenciales
+2. **Si tocaste la red**, prueba los dos modos: arranque sin credenciales
    (portal) y arranque con credenciales válidas (STA).
 
-4. **Si tocaste `web_ui.h`**, ábrelo en un móvil de verdad. El panel se diseñó
+3. **Si tocaste `web_ui.h`**, ábrelo en un móvil de verdad. El panel se diseñó
    para eso y hay diferencias reales con el escritorio.
 
-### Los binarios de `docs/`
+Para compilar en local:
 
-`docs/led_badge_reborn.bin` es un artefacto compilado que está versionado a
-propósito, porque es lo que instala la página. **No lo regeneres en tu PR**: lo
-actualiza el mantenedor al publicar una versión. Así se evitan conflictos
-binarios entre PRs.
+```bash
+cd firmware/led_badge_reborn
+arduino-cli compile --fqbn m5stack:esp32:m5stack_atom .
+```
+
+### Los binarios del instalador
+
+No están en el repositorio. `docs/` solo guarda la página y el `manifest.json`;
+los `.bin` los compila y publica el CI al crear un tag. Así no hay conflictos
+binarios entre PRs ni riesgo de que la página publicada instale una versión
+distinta de la que está en el código.
+
+Si cambias los nombres o los offsets del `manifest.json`, tendrás que ajustar
+también el job `instalador` del CI, que los valida contra una lista fija.
 
 ---
 
@@ -91,13 +95,18 @@ No añadas firmas ni menciones de herramientas de IA en los commits.
 ## Publicar una versión (mantenedor)
 
 1. Subir `FW_VERSION` en `firmware/led_badge_reborn/config.h` y `version` en
-   `docs/manifest.json`.
-2. Compilar con `--export-binaries` y copiar
-   `build/m5stack.esp32.m5stack_atom/led_badge_reborn.ino.bin` a
-   `docs/led_badge_reborn.bin`.
-   Las otras tres partes solo cambian si se toca el esquema de particiones.
-3. Commit, tag `vX.Y.Z` y push del tag.
-4. Crear la Release en GitHub adjuntando el `.bin`.
+   `docs/manifest.json`. **Tienen que coincidir**: el CI falla si no.
+2. Anotar los cambios en [CHANGELOG.md](CHANGELOG.md).
+3. Fusionar eso en `main` por PR, como cualquier otro cambio.
+4. Crear el tag y empujarlo:
+
+   ```bash
+   git tag -a v1.2.3 -m "LED Badge Reborn v1.2.3"
+   git push origin v1.2.3
+   ```
+
+El resto lo hace el CI: compila, crea la Release con los binarios adjuntos y
+despliega el instalador en GitHub Pages. No hay que tocar ningún `.bin` a mano.
 
 ---
 
