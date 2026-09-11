@@ -5,6 +5,15 @@ Este proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Sin publicar]
 
+### Corregido
+
+- El doble toque en el panel ya no hace zoom ni arrastra el retardo de ~300 ms
+  que el navegador espera para distinguirlo de un toque simple
+  (`touch-action: manipulation`). El zoom con dos dedos sigue funcionando.
+- Tocar efectos rápido ya no encola una petición por toque. La selección se
+  pinta al instante y, mientras hay un envío en vuelo, los toques siguientes se
+  resumen en el último; el dispositivo atiende de una en una y se quedaba atrás.
+
 ## [2.0.0] - 2026-09-11
 
 Se renombra el proyecto y se reemplaza el catálogo de efectos por completo.

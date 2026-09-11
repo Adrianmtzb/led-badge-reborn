@@ -25,6 +25,8 @@ static const char INDEX_HTML[] PROGMEM = R"HTML(<!DOCTYPE html>
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+body,button,summary{touch-action:manipulation}
+button{-webkit-tap-highlight-color:transparent}
 body{
   margin:0 auto; max-width:44rem; padding:0 1rem env(safe-area-inset-bottom);
   background:var(--ink); color:var(--text);
@@ -217,9 +219,30 @@ function drawGrid(){
   }
 }
 
+// El dispositivo atiende una petición a la vez, así que tocar rápido encolaba
+// un POST y un GET de estado por toque y el panel se quedaba atrás. Ahora la
+// selección se pinta al instante y, mientras hay un envío en vuelo, los toques
+// siguientes se resumen en el último: lo que importa es el color que acabas de
+// tocar, no emitir los seis intermedios.
+let sending=false,pending=null;
+
 async function send(i){
-  try{await j('/api/send?index='+i,{method:'POST',headers:H});msg('');await refresh()}
-  catch(e){msg('No se pudo emitir. Comprueba la conexión con el dispositivo.',1)}
+  st.index=i;paintLive();drawGrid();
+
+  if(sending){pending=i;return}
+  sending=true;
+  try{
+    let idx=i;
+    for(;;){
+      await j('/api/send?index='+idx,{method:'POST',headers:H});
+      if(pending===null)break;
+      idx=pending;pending=null;
+    }
+    msg('');
+  }catch(e){
+    msg('No se pudo emitir. Comprueba la conexión con el dispositivo.',1);
+    await refresh().catch(()=>{});   // el estado local puede haberse ido
+  }finally{sending=false;pending=null}
 }
 
 async function refresh(){st=await j('/api/state');paintLive();drawGrid()}
